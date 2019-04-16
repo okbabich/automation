@@ -46,7 +46,6 @@ public class BarnesNobleFindIsbnsByFullCcs extends Utils {
 
         WebElement campusBox = driver.findElement(By.xpath("//div[@class='campusContainer'][1]//div[@class='bncbSelectBox campusSectionHeader']"));
         LibraryUtils.waitForElementToBeClickable(driver, campusBox, 10).click();
-        //campusBox.click();
         List<WebElement> campuses = campusBox.findElements(By.xpath("*//li[@class='bncbOptionItem']"));
         for (WebElement option : campuses) {
             if (option.getText().equals(definiteCampus)) {

@@ -38,29 +38,3 @@ public class PearsonShowBookTitleTwoConditions extends Utils {
 }
 
 
-
-
-
-
-
-
-//        String digitalXpath =  "";
-//        String digPrintXpath =  "";
-//        String printXpath = "";
-//        List<WebElement> blocks = driver.findElements(By.xpath(digitalXpath+i));
-//
-//        List<>
-//        for(WebElement element : blocks) {
-//            List<Object[]> items = new ArrayList<>();
-//            String isbn = driver.findElement(By.xpath("//span[@class='isbn13']")).getText();
-//            //String price = driver.findElement(By.xpath("//span[@class='isbn13']")).getText();
-//           // Double priceNumber = Double.valueOf(price.substring(1));
-//            String title = driver.findElement(By.xpath("//p[@class='title']")).getText();
-//            items.add(new Object[]{isbn});
-//            //items.add(new Object[]{priceNumber});
-//            items.add(new Object[]{title});
-//            System.out.println(items);
-//        }
-//
-
-
