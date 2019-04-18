@@ -2,16 +2,17 @@ package skillup;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import utils.LibraryUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ScreenshotTask extends Utils {
 
-
     @Test
 
-    public void takeScreenshot() {
+    public void takeScreenshot() throws InterruptedException {
 
         List<Object[]> urls = new ArrayList<>();
 
@@ -20,24 +21,17 @@ public class ScreenshotTask extends Utils {
         urls.add(new Object[]{"https://www.bncollege.com/campus-stores/", "bn"});
         urls.add(new Object[]{"https://www.mheducation.com/home.html", "mhe"});
 
-        for (int i = 0; i < urls.size(); i++) {
-            driver.get(urls.get(i)[0].toString());
-            pageIsLoaded();
-            ScreenshotTaker.captureScreenshot(driver, urls.get(i)[1].toString());
+        for (Object[] urlWithName : urls) {
+            driver.get(urlWithName[0].toString());
+            WebElement careersText = driver.findElement(By.xpath("//a[contains(text(),'Careers')]"));
+            LibraryUtils.waitForElementToBeVisible(driver, careersText, 15);
+            ScreenshotTaker.captureScreenshot(driver, urlWithName[1].toString());
         }
-    }
-
-    public void pageIsLoaded() {
-
-        driver.findElement(By.xpath("//a[contains(text(),'Careers')]"));
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
     }
 }
+
+
+
 
 
 
