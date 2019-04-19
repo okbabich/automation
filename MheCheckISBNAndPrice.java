@@ -3,14 +3,28 @@ package skillup;
 //Перейти на страницу - https://www.mheducation.com/highered/product/1260110710.html, проверить что на этой странице есть ISBN 9781260110715 и проверить что цена для него равна 185
 
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
 import static org.junit.Assert.*;
+import static skillup.Utils.*;
 
-public class MheCheckISBNAndPrice extends Utils {
+public class MheCheckISBNAndPrice{
 
-    String isbn10 = "1260110710";
+    private String isbn10 = "1260110710";
+
+    @BeforeClass
+    public static void setUpClass() {
+        initDriver();
+        driver.get("https://www.mheducation.com/highered/product/1260110710.html");
+    }
+
+    @AfterClass
+    public static void tearDownClass(){
+        closeDriver();
+    }
 
     @Test
     public void checkingBook() {
