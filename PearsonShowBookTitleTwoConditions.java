@@ -1,10 +1,16 @@
 package skillup;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
+
+import static skillup.Utils.*;
+
+
 
 /*На странице http://www.mypearsonstore.com/bookstore/introductory-statistics-plus-mylab-statistics-with-9780135229996 найти все предложения (правая колонка)
  и вывести в консольку тайтл тех книг у кого исбн начинается на 9780 и цена покупки меньше или равна 200
@@ -14,10 +20,21 @@ import java.util.List;
 */
 
 
-public class PearsonShowBookTitleTwoConditions extends Utils {
+public class PearsonShowBookTitleTwoConditions{
+
+    @BeforeClass
+    public static void setUpClass() {
+        initDriver();
+        driver.get("http://www.mypearsonstore.com/bookstore/introductory-statistics-plus-mylab-statistics-with-9780135229996");
+    }
+
+    @AfterClass
+    public static void tearDownClass(){
+        closeDriver();
+    }
+
     @Test
  public void findBooks() {
-        driver.get("http://www.mypearsonstore.com/bookstore/introductory-statistics-plus-mylab-statistics-with-9780135229996");
 
         List<WebElement> items = driver.findElements(By.xpath("//div[@id='genericChoice']"));
 
@@ -25,8 +42,8 @@ public class PearsonShowBookTitleTwoConditions extends Utils {
             String isbn = element.findElement(By.className("isbn13")).getText();
             String price = element.findElement(By.className("price")).getText();
             Double priceNumber = Double.valueOf(price.substring(1));
-            String title = element.findElement(By.className("title")).getText();
             if (isMatched(priceNumber, isbn)) {
+                String title = element.findElement(By.className("title")).getText();
                 System.out.println(title);
             }
         }
