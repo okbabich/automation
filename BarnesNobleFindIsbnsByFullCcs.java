@@ -3,17 +3,18 @@ package skillup;
 /*#кликатьНеПерекликать - взять один ПОЛНЫЙ ccs с BN (свежий тег + убедится что у этого ccs есть книги) ,
 прокликать его, начиная со страницы https://www.bncollege.com/campus-stores/   со страницы результатов вывести в консоль все исбны что там есть*/
 
-import org.junit.Test;
+import org.junit.*;
 import org.openqa.selenium.By;
 
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import utils.LibraryUtils;
 
 import java.util.List;
 
+import static skillup.Utils.*;
 
-public class BarnesNobleFindIsbnsByFullCcs extends Utils {
+
+public class BarnesNobleFindIsbnsByFullCcs {
 
     private String definiteCampus = "Barnes & Noble @ Quincy College";
     private String definiteTerm = "Spring 2019";
@@ -22,15 +23,21 @@ public class BarnesNobleFindIsbnsByFullCcs extends Utils {
     private String definiteSection = "01";
 
 
+    @BeforeClass
+    public static void setUpClass() {
+        initDriver();
+        driver.get("https://www.bncollege.com/campus-stores/");
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        closeDriver();
+    }
 
     @Test
-    public void goByFullCcs() throws InterruptedException {
+    public void goByFullCcs() {
 
-        driver.get("https://www.bncollege.com/campus-stores/");
-
-        while (driver.findElements(By.xpath("//*[text()='This site can’t be reached']")).size() > 0) {
-            driver.navigate().refresh();
-        }
+        pageRefresher("//*[text()='This site can’t be reached']");
 
         WebElement searchBox = driver.findElement(By.xpath("//button[@type='submit']"));
         LibraryUtils.waitForElementToBeVisible(driver, searchBox, 10);
@@ -52,6 +59,7 @@ public class BarnesNobleFindIsbnsByFullCcs extends Utils {
                 option.click();
             }
         }
+
         WebElement termBox = driver.findElement(By.xpath("//div[@class='bookRowContainer'][1]//div[@class='bncbSelectBox termHeader']"));
         LibraryUtils.waitForElementToBeClickable(driver, termBox, 10).click();
         List<WebElement> terms = termBox.findElements(By.xpath("*//li[@class='bncbOptionItem termOption']"));
@@ -100,11 +108,12 @@ public class BarnesNobleFindIsbnsByFullCcs extends Utils {
 
         for (WebElement isbns : booksList) {
             String isbn13 = isbns.findElement(By.xpath("*//li[@class='book_c2_180616']")).getText();
-            isbn13 = isbn13.replace("ISBN:   ","");
+            isbn13 = isbn13.replace("ISBN:   ", "");
             System.out.println(isbn13);
         }
-        }
     }
+}
+
 
 
 
