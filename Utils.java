@@ -1,22 +1,17 @@
 package skillup;
 
-import org.junit.After;
-import org.junit.Before;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.fail;
-
 
 public class Utils {
 
-    public WebDriver driver;
-    public StringBuffer verificationErrors = new StringBuffer();
+    public static WebDriver driver;
 
-    @Before
 
-    public void initDriver() {
+    public static void initDriver() {
         System.setProperty("webdriver.chrome.driver", "C:\\Program Files\\Chrome Driver\\chromedriver.exe");
         //System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");       //supress logs with warning
         driver = new ChromeDriver();
@@ -24,13 +19,17 @@ public class Utils {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
 
-    @After
+    public static void closeDriver() {
+        if (driver != null)
+            driver.quit();
+    }
 
-    public void stop() {
-        driver.quit();
-        String verificationErrorString = verificationErrors.toString();
-        if (!"".equals(verificationErrorString)) {
-            fail(verificationErrorString);
+    public static void pageRefresher(String XPATH_FOR_REFRESHER) {
+        int maxRefreshCount = 5;
+        for (int actualCount = 0; actualCount < maxRefreshCount; actualCount++) {
+            if (driver.findElements(By.xpath(XPATH_FOR_REFRESHER)).size() > 0) {
+                driver.navigate().refresh();
+            }
         }
     }
 }
