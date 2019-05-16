@@ -28,11 +28,6 @@ public class PearsonShowBookTitleTwoConditions{
         driver.get("http://www.mypearsonstore.com/bookstore/introductory-statistics-plus-mylab-statistics-with-9780135229996");
     }
 
-    @AfterClass
-    public static void tearDownClass(){
-        closeDriver();
-    }
-
     @Test
  public void findBooks() {
 
@@ -51,6 +46,11 @@ public class PearsonShowBookTitleTwoConditions{
 
     private boolean isMatched(Double priceNumber, String isbn) {
         return (priceNumber <= 200.00) && (isbn.substring(9).startsWith("978-0"));
+    }
+
+    @AfterClass
+    public static void tearDownClass(){
+        closeDriver();
     }
 }
 

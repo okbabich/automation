@@ -9,20 +9,15 @@ import utils.LibraryUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static skillup.Utils.*;
+
 
 public class ScreenshotTask {
 
     @BeforeClass
     public static void setUpClass() {
         initDriver();
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-        closeDriver();
     }
 
     @Test
@@ -48,6 +43,11 @@ public class ScreenshotTask {
 
         }
 
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        closeDriver();
     }
 }
 
