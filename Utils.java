@@ -13,10 +13,19 @@ public class Utils {
 
     public static void initDriver() {
         System.setProperty("webdriver.chrome.driver", "C:\\Program Files\\Chrome Driver\\chromedriver.exe");
-        //System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");       //supress logs with warning
+        //System.setProperty(ChromeDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");       //supress logs with warning
         driver = new ChromeDriver();
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+    }
+
+    public static WebDriver initTheSameDriver() {
+        System.setProperty("webdriver.chrome.driver", "C:\\Program Files\\Chrome Driver\\chromedriver.exe");
+        //System.setProperty(ChromeDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");       //supress logs with warning
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        return  driver;
     }
 
     public static void closeDriver() {
