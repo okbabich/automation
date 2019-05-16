@@ -1,6 +1,6 @@
 package skillup;
 
-import com.mycila.junit.concurrent.Concurrency;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -9,6 +9,8 @@ import org.junit.runners.Parameterized;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import utils.Concurrent;
+import utils.ConcurrentJunitRunner;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,8 +20,8 @@ import static org.junit.Assert.assertTrue;
 import static skillup.Utils.*;
 
 
-@Concurrency(1)
-@RunWith(value = Parameterized.class)
+@Concurrent(threads = 1)
+@RunWith(ConcurrentJunitRunner.class)
 public class AmazonNotFoundTest {
 
     private String isbn;
@@ -338,7 +340,7 @@ public class AmazonNotFoundTest {
 
     @BeforeClass
     public static void initializationDriver() {
-        initDriver();
+        driver = initTheSameDriver();
         driver.get("https://www.amazon.com/s?k=---&ref=nb_sb_noss");
     }
 
@@ -362,7 +364,6 @@ public class AmazonNotFoundTest {
     }
 
     @AfterClass
-
     public static void stopDriver() {
         closeDriver();
     }
