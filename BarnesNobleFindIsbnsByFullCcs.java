@@ -29,11 +29,6 @@ public class BarnesNobleFindIsbnsByFullCcs {
         driver.get("https://www.bncollege.com/campus-stores/");
     }
 
-    @AfterClass
-    public static void tearDownClass() {
-        closeDriver();
-    }
-
     @Test
     public void goByFullCcs() {
 
@@ -111,6 +106,10 @@ public class BarnesNobleFindIsbnsByFullCcs {
             isbn13 = isbn13.replace("ISBN:   ", "");
             System.out.println(isbn13);
         }
+    }
+    @AfterClass
+    public static void tearDownClass() {
+        closeDriver();
     }
 }
 
