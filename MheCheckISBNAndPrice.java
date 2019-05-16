@@ -21,11 +21,6 @@ public class MheCheckISBNAndPrice{
         driver.get("https://www.mheducation.com/highered/product/1260110710.html");
     }
 
-    @AfterClass
-    public static void tearDownClass(){
-        closeDriver();
-    }
-
     @Test
     public void checkingBook() {
         int count = driver.findElements(By.xpath("//div[@class='pdp-card col-xs-12 col-sm-6 col-md-4']")).size();
@@ -50,5 +45,10 @@ public class MheCheckISBNAndPrice{
         String actualPrice = driver.findElement(By.xpath("//div[@id='product-card-" + isbn10 + "']//span[@class='buying-card-price']")).getText();
         System.out.println(actualPrice);
         assertTrue(actualPrice.equals(expectedPrice));
+    }
+
+    @AfterClass
+    public static void tearDownClass(){
+        closeDriver();
     }
 }
