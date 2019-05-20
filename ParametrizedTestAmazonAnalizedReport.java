@@ -66,37 +66,38 @@ public class ParametrizedTestAmazonAnalizedReport {
         List<WebElement> items = driver.findElements(By.xpath(XPATH_FOR_PRICES_BOX_AMAZON));
 
         if (items.size() > 0) {
-            getAndCompareIsbn(XPATH_TO_GET_ISBN13_NEW_DESIGN);
-            checkPriceFromThePage(XPATH_TO_GET_BUY_NEW_PRICE_NEW_DESIGN);
+            getAndCompareIsbn(XPATH_TO_GET_ISBN13_AMAZON_NEW_DESIGN, ISBN13);
+            checkPriceFromThePage(XPATH_TO_GET_BUY_NEW_PRICE_AMAZON_NEW_DESIGN);
         } else {
-            getAndCompareIsbn(XPATH_TO_GET_ISBN13_OLD_DESIGN);
-            checkPriceFromThePage(XPATH_TO_GET_BUY_NEW_OLD_DESIGN);
+            getAndCompareIsbn(XPATH_TO_GET_ISBN13_AMAZON_OLD_DESIGN, ISBN13);
+            checkPriceFromThePage(XPATH_TO_GET_BUY_NEW_AMAZON_OLD_DESIGN);
         }
     }
 
-    public void checkPriceFromThePage(String xpathGetPrice) {
-        List<WebElement> buyNewPriceBox = driver.findElements(By.xpath(xpathGetPrice));
+//    public void checkPriceFromThePage(String xpathGetPrice) {
+//        List<WebElement> buyNewPriceBox = driver.findElements(By.xpath(xpathGetPrice));
+//
+//        if(driver.findElements(By.xpath(XPATH_CURRENTLY_UNAVAILABLE)).size() > 0 ){
+//            System.out.println("Buy New price is absent");
+//        }
+//        else if(buyNewPriceBox.size() > 0 ) {
+//            System.out.println("Buy New price exists - " + buyNewPriceBox.get(0).getText());
+//            assertFalse(buyNewPriceBox.get(0).getText().contains("$"));
+//        }
+//        else {
+//            System.out.println("Buy New price is absent");
+//            assertTrue(true);
+//        }
+//    }
 
-        if(driver.findElements(By.xpath(XPATH_CURRENTLY_UNAVAILABLE)).size() > 0 ){
-            System.out.println("Buy New price is absent");
-        }
-        else if(buyNewPriceBox.size() > 0 ) {
-            System.out.println("Buy New price exists - " + buyNewPriceBox.get(0).getText());
-            assertFalse(buyNewPriceBox.get(0).getText().contains("$"));
-        }
-        else {
-            System.out.println("Buy New price is absent");
-            assertTrue(true);
-        }
-    }
 
-    public void getAndCompareIsbn(String xpathGetIsbn) {
-        String IsbnFromThePage = driver.findElement(By.xpath(xpathGetIsbn)).getText()
-                .replace("-","")
-                .replace("ISBN: ","");
-        assertEquals(ISBN13, IsbnFromThePage);
-        System.out.println(IsbnFromThePage);
-    }
+//    public void getAndCompareIsbn(String xpathGetIsbn) {
+//        String IsbnFromThePage = driver.findElement(By.xpath(xpathGetIsbn)).getText()
+//                .replace("-","")
+//                .replace("ISBN: ","");
+//        assertEquals(ISBN13, IsbnFromThePage);
+//        System.out.println(IsbnFromThePage);
+//    }
 
     @AfterClass
     public static void stopDriver() {
