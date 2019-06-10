@@ -1,29 +1,44 @@
 package skillup;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import ru.yandex.qatools.allure.annotations.Parameter;
 import utils.Concurrent;
 import utils.ConcurrentJunitRunner;
+import java.lang.Object;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.*;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static skillup.Utils.*;
+import static org.junit.Assert.assertEquals;
+import static skillup.Utils.closeRemotWD;
+import static skillup.Utils.initRemoteWD;
 import static skillup.Xpathes.*;
 
 @Concurrent(threads = 1)
 @RunWith(ConcurrentJunitRunner.class)
 
+
 public class MhpGetDataFromMySql {
 
-    public static WebDriver driver;
+    private static final String url = "jdbc:mysql://cppt.cearfhlon7we.us-west-2.rds.amazonaws.com/cppt";
+    private static final String user = "tester";
+    private static final String password = "lsjc1dc15mg";
+
+    private static Connection connection;
+    private static Statement statement;
+    private static ResultSet result;
+
 
     @Parameter("isbn13FromTable")
     private static String isbn13FromTable;
@@ -45,28 +60,37 @@ public class MhpGetDataFromMySql {
         this.urlFromTable = urlFromTable;
     }
 
-    private static final String url = "jdbc:mysql://cppt.cearfhlon7we.us-west-2.rds.amazonaws.com/cppt";
-    private static final String user = "tester";
-    private static final String password = "lsjc1dc15mg";
-
-    private static Connection connection;
-    private static Statement statement;
-    private static ResultSet result;
-
-    @BeforeClass
-    public static void initializationDriver() {
-        driver = initTheSameDriver();
+    @Before
+    public void initRemoteDriver() throws MalformedURLException {
+        initRemoteWD();
     }
 
     @Test
-    public void mhprofessionalMySqlTest() {
-        driver.get(urlFromTable);
-        getAndCompareIsbn(XPATH_TO_GET_ISBN_MHP, isbn13FromTable);
-        getAndComparePrice(XPATH_TO_GET_PRICE_MHP, priceFromTable);
+    public void mhprofessionalMySqlTest() throws MalformedURLException{
+
+        DesiredCapabilities capability = new DesiredCapabilities();
+        capability.setBrowserName("chrome");
+        WebDriver driver1 = new RemoteWebDriver(new URL("http://10.10.83.231:4444/wd/hub"), capability);
+//        WebDriver driver1 = new RemoteWebDriver(new URL("http://54.202.145.27:4444/wd/hub"), capability);
+
+        driver1.get(urlFromTable);
+        String IsbnFromThePage = driver1.findElement(By.xpath(XPATH_TO_GET_ISBN_MHP)).getText()
+                .replace("-", "")
+                .replace("ISBN: ", "")
+                .replace("ISBN:", "");
+        assertEquals(isbn13FromTable, IsbnFromThePage);
+        System.out.println(IsbnFromThePage);
+
+
+        String actualPrice = driver1.findElement(By.xpath(XPATH_TO_GET_PRICE_MHP)).getText()
+                .replace("$", "");
+        assertEquals(priceFromTable, actualPrice);
+        System.out.println("Parsed price is matched with website");
+        driver1.quit();
     }
 
-    public static  ArrayList<Object[]> getDataFromMysql() throws IOException {
-        String query = "select ISBN13, PRICE_NET_$, URL from mhprofessional where tag = 987 limit 10";
+    public static ArrayList<Object[]> getDataFromMysql() throws IOException {
+        String query = "select ISBN13, PRICE_NET_$, URL from mhprofessional where tag = 1005 limit 10";
         ArrayList<Object[]> data = new ArrayList<>();
         try {
             connection = DriverManager.getConnection(url, user, password);
@@ -78,7 +102,7 @@ public class MhpGetDataFromMySql {
                 String urlFromTable = result.getString(3);
 
                 data.add(new Object[]{isbn13FromTable, priceFromTable, urlFromTable});
-//                System.out.println(isbn13FromTable + " " + priceFromTable + " " + urlFromTable);
+                System.out.println(isbn13FromTable + " " + priceFromTable + " " + urlFromTable);
             }
         } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
@@ -86,9 +110,9 @@ public class MhpGetDataFromMySql {
         return data;
     }
 
-    @AfterClass
-    public static void stopDriver() {
-        closeDriver();
+    @After
+    public  void stopDriver() {
+        closeRemotWD();
     }
 }
 
