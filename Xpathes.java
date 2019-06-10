@@ -9,6 +9,6 @@ public class Xpathes {
     public static final String XPATH_CURRENTLY_UNAVAILABLE_AMAZON = "//*[@id='availability']/span[contains(text(),'Currently unavailable')]";
     public static final String XPATH_FOR_PRICES_BOX_AMAZON = "//div[@id='ppdFixedGridRightColumn']";
 
-    public static final String XPATH_TO_GET_ISBN_MHP = "//div[@class='prod-head-attr-data']//li[@class='even item'][2]";
-    public static final String XPATH_TO_GET_PRICE_MHP = "//div[@class='price-info price-default']//span[@class='price']";
+    public static final String XPATH_TO_GET_ISBN_MHP = "//div[@class='prod-head-attr-data']//li[4]//span";
+    public static final String XPATH_TO_GET_PRICE_MHP = "//div[@class='price-box']//span[@class='regular-price']//span[@class='price']";
 }
