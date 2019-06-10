@@ -23,9 +23,6 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static skillup.Utils.*;
 import static skillup.Xpathes.*;
 
@@ -73,31 +70,6 @@ public class ParametrizedTestAmazonAnalizedReport {
             checkPriceFromThePage(XPATH_TO_GET_BUY_NEW_AMAZON_OLD_DESIGN);
         }
     }
-
-//    public void checkPriceFromThePage(String xpathGetPrice) {
-//        List<WebElement> buyNewPriceBox = driver.findElements(By.xpath(xpathGetPrice));
-//
-//        if(driver.findElements(By.xpath(XPATH_CURRENTLY_UNAVAILABLE)).size() > 0 ){
-//            System.out.println("Buy New price is absent");
-//        }
-//        else if(buyNewPriceBox.size() > 0 ) {
-//            System.out.println("Buy New price exists - " + buyNewPriceBox.get(0).getText());
-//            assertFalse(buyNewPriceBox.get(0).getText().contains("$"));
-//        }
-//        else {
-//            System.out.println("Buy New price is absent");
-//            assertTrue(true);
-//        }
-//    }
-
-
-//    public void getAndCompareIsbn(String xpathGetIsbn) {
-//        String IsbnFromThePage = driver.findElement(By.xpath(xpathGetIsbn)).getText()
-//                .replace("-","")
-//                .replace("ISBN: ","");
-//        assertEquals(ISBN13, IsbnFromThePage);
-//        System.out.println(IsbnFromThePage);
-//    }
 
     @AfterClass
     public static void stopDriver() {
