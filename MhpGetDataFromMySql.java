@@ -4,12 +4,14 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+//import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import ru.yandex.qatools.allure.annotations.Parameter;
-import utils.Concurrent;
-import utils.ConcurrentJunitRunner;
+//import utils.Concurrent;
+//import utils.ConcurrentJunitRunner;
+import utils.Parallelized;
+
 import java.lang.Object;
 
 import java.io.IOException;
@@ -21,12 +23,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
-import static skillup.Utils.closeRemotWD;
-import static skillup.Utils.initRemoteWD;
+import static org.junit.Assert.assertTrue;
 import static skillup.Xpathes.*;
 
-@Concurrent(threads = 1)
-@RunWith(ConcurrentJunitRunner.class)
+//@Concurrent(threads = 1)
+@RunWith(Parallelized.class)
 
 
 public class MhpGetDataFromMySql {
@@ -34,11 +35,10 @@ public class MhpGetDataFromMySql {
     private static final String url = "jdbc:mysql://cppt.cearfhlon7we.us-west-2.rds.amazonaws.com/cppt";
     private static final String user = "tester";
     private static final String password = "lsjc1dc15mg";
-
     private static Connection connection;
     private static Statement statement;
     private static ResultSet result;
-
+    public RemoteWebDriver driver1;
 
     @Parameter("isbn13FromTable")
     private static String isbn13FromTable;
@@ -61,36 +61,46 @@ public class MhpGetDataFromMySql {
     }
 
     @Before
-    public void initRemoteDriver() throws MalformedURLException {
-        initRemoteWD();
+    public void setUP() throws Exception {
+        DesiredCapabilities capability = new DesiredCapabilities();
+        capability.setBrowserName("chrome");
+        driver1 = new RemoteWebDriver(new URL("http://10.10.83.231:4444/wd/hub"), capability);
     }
 
     @Test
     public void mhprofessionalMySqlTest() throws MalformedURLException{
 
-        DesiredCapabilities capability = new DesiredCapabilities();
-        capability.setBrowserName("chrome");
-        WebDriver driver1 = new RemoteWebDriver(new URL("http://10.10.83.231:4444/wd/hub"), capability);
+//        DesiredCapabilities capability = new DesiredCapabilities();
+//        capability.setBrowserName("chrome");
+//        WebDriver driver1 = new RemoteWebDriver(new URL("http://10.10.83.231:4444/wd/hub"), capability);
 //        WebDriver driver1 = new RemoteWebDriver(new URL("http://54.202.145.27:4444/wd/hub"), capability);
 
         driver1.get(urlFromTable);
-        String IsbnFromThePage = driver1.findElement(By.xpath(XPATH_TO_GET_ISBN_MHP)).getText()
-                .replace("-", "")
-                .replace("ISBN: ", "")
-                .replace("ISBN:", "");
-        assertEquals(isbn13FromTable, IsbnFromThePage);
-        System.out.println(IsbnFromThePage);
+        String IsbnFromThePage = driver1.findElement(By.xpath(XPATH_TO_GET_ISBN_MHP)).getText();
+        System.out.println(urlFromTable);
 
+        if (isbn13FromTable.equals(IsbnFromThePage)){
+            System.out.println("MySQL data " + isbn13FromTable + " = site data (first tab) " + IsbnFromThePage);
+        }
+        else {
+            driver1.findElement(By.xpath(XPATH_TO_GET_ISBN_MHP_ANOTHER_TAB)).click();
+            String IsbnFromThePageAnotherTab = driver1.findElement(By.xpath(XPATH_TO_GET_ISBN_MHP)).getText();
+
+            if(isbn13FromTable.equals(IsbnFromThePageAnotherTab)) {
+                System.out.println("MySQL data " + isbn13FromTable + " = site data (another tab) " + IsbnFromThePageAnotherTab );
+            }
+        }
 
         String actualPrice = driver1.findElement(By.xpath(XPATH_TO_GET_PRICE_MHP)).getText()
                 .replace("$", "");
         assertEquals(priceFromTable, actualPrice);
-        System.out.println("Parsed price is matched with website");
+        System.out.println("Parsed price " + priceFromTable + " is matched with website " + actualPrice);
         driver1.quit();
     }
 
+
     public static ArrayList<Object[]> getDataFromMysql() throws IOException {
-        String query = "select ISBN13, PRICE_NET_$, URL from mhprofessional where tag = 1005 limit 10";
+        String query = "select ISBN13, PRICE_NET_$, URL from mhprofessional where tag = 1007 limit 10";
         ArrayList<Object[]> data = new ArrayList<>();
         try {
             connection = DriverManager.getConnection(url, user, password);
@@ -112,7 +122,8 @@ public class MhpGetDataFromMySql {
 
     @After
     public  void stopDriver() {
-        closeRemotWD();
+        if (driver1 != null)
+            driver1.quit();
     }
 }
 
