@@ -11,4 +11,5 @@ public class Xpathes {
 
     public static final String XPATH_TO_GET_ISBN_MHP = "//div[@class='prod-head-attr-data']//li[4]//span";
     public static final String XPATH_TO_GET_PRICE_MHP = "//div[@class='price-box']//span[@class='regular-price']//span[@class='price']";
+    public static final String XPATH_TO_GET_ISBN_MHP_ANOTHER_TAB = "//*[@id='cti-config-variants-145']//li[2]//label";
 }
