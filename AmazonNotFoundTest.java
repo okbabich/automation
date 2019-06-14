@@ -18,6 +18,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 import static skillup.Utils.*;
+import static skillup.Xpathes.*;
 
 
 @Concurrent(threads = 1)
@@ -347,11 +348,11 @@ public class AmazonNotFoundTest {
     @Test
     public void findISBN() {
 
-        driver.findElement(By.xpath("//input[@id='twotabsearchtextbox']")).click();
-        driver.findElement(By.xpath("//input[@id='twotabsearchtextbox']")).clear();
-        driver.findElement(By.xpath("//input[@type='text']")).sendKeys(isbn);
-        driver.findElement(By.xpath("//input[@type='submit']")).click();
-        List<WebElement> noResultBlock = driver.findElements(By.xpath("//*[@id='search']/div[1]/div[2]/div/span[2]/div/div[1]")); //для того, чтобы тест не фейлился.
+        driver.findElement(By.xpath(XPATH_SEARCH_BOX_AMAZON)).click();
+        driver.findElement(By.xpath(XPATH_SEARCH_BOX_AMAZON)).clear();
+        driver.findElement(By.xpath(XPATH_SEARCH_FIELD_AMAZON)).sendKeys(isbn);
+        driver.findElement(By.xpath(XPATH_SUBMIT_BUTTON_AMAZON)).click();
+        List<WebElement> noResultBlock = driver.findElements(By.xpath(XPATH_NO_RESULT_MESSAGE_AMAZON)); //для того, чтобы тест не фейлился.
                                                                                                                                   //создается коллекция,
                                                                                                                                   //в которую складываются найденные блочки
         if (noResultBlock.size() > 0) {                                               //если в коллекции есть какой-то элемент, то
