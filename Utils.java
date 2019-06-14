@@ -42,7 +42,7 @@ public class Utils {
     public static WebDriver initRemoteWD() throws MalformedURLException {
         DesiredCapabilities capability = new DesiredCapabilities();
         capability.setBrowserName("chrome");
-        driver1 = new RemoteWebDriver(new URL("http://10.10.83.231:4444/wd/hub"), capability);
+        WebDriver driver1 = new RemoteWebDriver(new URL("http://10.10.83.231:4444/wd/hub"), capability);
         return driver1;
     }
 
@@ -77,7 +77,7 @@ public class Utils {
         List<WebElement> buyNewPriceBox = driver.findElements(By.xpath(xpathGetPrice));
 
         if (driver.findElements(By.xpath(XPATH_CURRENTLY_UNAVAILABLE_AMAZON)).size() > 0) {
-            System.out.println("Buy New price is absent");
+            System.out.println("Buy New price is absent (old design)");
         } else if (buyNewPriceBox.size() > 0) {
             System.out.println("Buy New price exists - " + buyNewPriceBox.get(0).getText());
             assertFalse(buyNewPriceBox.get(0).getText().contains("$"));
