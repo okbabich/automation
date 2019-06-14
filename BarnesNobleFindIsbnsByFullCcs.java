@@ -4,6 +4,7 @@ package skillup;
 прокликать его, начиная со страницы https://www.bncollege.com/campus-stores/   со страницы результатов вывести в консоль все исбны что там есть*/
 
 import org.junit.*;
+import org.junit.Test;
 import org.openqa.selenium.By;
 
 import org.openqa.selenium.WebElement;
@@ -12,6 +13,7 @@ import utils.LibraryUtils;
 import java.util.List;
 
 import static skillup.Utils.*;
+import static skillup.Xpathes.*;
 
 
 public class BarnesNobleFindIsbnsByFullCcs {
@@ -32,9 +34,9 @@ public class BarnesNobleFindIsbnsByFullCcs {
     @Test
     public void goByFullCcs() {
 
-        pageRefresher("//*[text()='This site can’t be reached']");
+        pageRefresher(XPATH_FOR_REFRESHER_BN);
 
-        WebElement searchBox = driver.findElement(By.xpath("//button[@type='submit']"));
+        WebElement searchBox = driver.findElement(By.xpath(XPATH_SUBMIT_BUTTON_BN));
         LibraryUtils.waitForElementToBeVisible(driver, searchBox, 10);
 
         driver.findElement(By.linkText("Quincy College")).click();
@@ -42,31 +44,31 @@ public class BarnesNobleFindIsbnsByFullCcs {
             driver.switchTo().window(winHandle);
         }
 
-        WebElement textbooks = driver.findElement(By.xpath("//div[@class='mainNav']//li[@id='topCat_2']/a"));
+        WebElement textbooks = driver.findElement(By.xpath(XPATH_TEXTBOOK_FIELD_BN));
         LibraryUtils.waitForElementToBeClickable(driver, textbooks, 10).click();
 
 
-        WebElement campusBox = driver.findElement(By.xpath("//div[@class='campusContainer'][1]//div[@class='bncbSelectBox campusSectionHeader']"));
+        WebElement campusBox = driver.findElement(By.xpath(XPATH_CAMPUS_BOX_BN));
         LibraryUtils.waitForElementToBeClickable(driver, campusBox, 10).click();
-        List<WebElement> campuses = campusBox.findElements(By.xpath("*//li[@class='bncbOptionItem']"));
+        List<WebElement> campuses = campusBox.findElements(By.xpath(XPATH_CAMPUSES_BN));
         for (WebElement option : campuses) {
             if (option.getText().equals(definiteCampus)) {
                 option.click();
             }
         }
 
-        WebElement termBox = driver.findElement(By.xpath("//div[@class='bookRowContainer'][1]//div[@class='bncbSelectBox termHeader']"));
+        WebElement termBox = driver.findElement(By.xpath(XPATH_TERM_BOX_BN));
         LibraryUtils.waitForElementToBeClickable(driver, termBox, 10).click();
-        List<WebElement> terms = termBox.findElements(By.xpath("*//li[@class='bncbOptionItem termOption']"));
+        List<WebElement> terms = termBox.findElements(By.xpath(XPATH_TERMS_BN));
         for (WebElement option : terms) {
             if (option.getText().equals(definiteTerm)) {
                 option.click();
             }
         }
 
-        WebElement departmentBox = driver.findElement(By.xpath("//div[@class='bookRowContainer'][1]//li[@class='deptColumn']"));
+        WebElement departmentBox = driver.findElement(By.xpath(XPATH_DEPARTMENT_BOX_BN));
         LibraryUtils.waitForElementToBeClickable(driver, departmentBox, 10).click();
-        List<WebElement> departments = departmentBox.findElements(By.xpath("*//li[@class='result']"));
+        List<WebElement> departments = departmentBox.findElements(By.xpath(XPATH_RESULTS_BN));
         for (WebElement option : departments) {
             if (option.getText().equals(definiteDept)) {
                 option.click();
@@ -74,9 +76,9 @@ public class BarnesNobleFindIsbnsByFullCcs {
             }
         }
 
-        WebElement courseBox = driver.findElement(By.xpath("//div[@class='bookRowContainer activeStripeBorderBox'][1]//div[@class='courseBookSelector']//li[@class='courseColumn']"));
+        WebElement courseBox = driver.findElement(By.xpath(XPATH_COURSE_BOX_BN));
         LibraryUtils.waitForElementToBeClickable(driver, courseBox, 10).click();
-        List<WebElement> courses = courseBox.findElements(By.xpath("*//li[@class='result']"));
+        List<WebElement> courses = courseBox.findElements(By.xpath(XPATH_RESULTS_BN));
         for (WebElement option : courses) {
             if (option.getText().equals(definiteCourse)) {
                 option.click();
@@ -84,9 +86,9 @@ public class BarnesNobleFindIsbnsByFullCcs {
             }
         }
 
-        WebElement sectionBox = driver.findElement(By.xpath("//div[@class='bookRowContainer activeStripeBorderBox'][1]//div[@class='courseBookSelector']//li[@class='sectionColumn']"));
+        WebElement sectionBox = driver.findElement(By.xpath(XPATH_SECTION_BOX_BN));
         LibraryUtils.waitForElementToBeClickable(driver, sectionBox, 10).click();
-        List<WebElement> sections = sectionBox.findElements(By.xpath("*//li[@class='result']"));
+        List<WebElement> sections = sectionBox.findElements(By.xpath(XPATH_RESULTS_BN));
         for (WebElement option : sections) {
             if (option.getText().equals(definiteSection)) {
                 option.click();
@@ -94,15 +96,15 @@ public class BarnesNobleFindIsbnsByFullCcs {
             }
         }
 
-        WebElement button = driver.findElement(By.xpath("//div[@class='selectButtonContainer']//a[@id='findMaterialButton']"));
+        WebElement button = driver.findElement(By.xpath(XPATH_BUTTON_SHOW_RESULTS_BN));
         LibraryUtils.waitForElementToBeClickable(driver, button, 10).click();
 
-        WebElement booksSection = driver.findElement(By.xpath("//div[@class='book_sec']"));
+        WebElement booksSection = driver.findElement(By.xpath(XPATH_ALL_BOOK_SECTION_BN));
         LibraryUtils.waitForElementToBeVisible(driver, booksSection, 10);
-        List<WebElement> booksList = booksSection.findElements(By.xpath("*//div[@class='book-list']"));
+        List<WebElement> booksList = booksSection.findElements(By.xpath(XPATH_BOOK_LIST_BN));
 
         for (WebElement isbns : booksList) {
-            String isbn13 = isbns.findElement(By.xpath("*//li[@class='book_c2_180616']")).getText();
+            String isbn13 = isbns.findElement(By.xpath(XPATH_TO_GET_ISBN_BN)).getText();
             isbn13 = isbn13.replace("ISBN:   ", "");
             System.out.println(isbn13);
         }
