@@ -8,6 +8,10 @@ public class Xpathes {
     public static final String XPATH_TO_GET_BUY_NEW_AMAZON_OLD_DESIGN = "//div[@id='desktop_unifiedPrice']";
     public static final String XPATH_CURRENTLY_UNAVAILABLE_AMAZON = "//*[@id='availability']/span[contains(text(),'Currently unavailable')]";
     public static final String XPATH_FOR_PRICES_BOX_AMAZON = "//div[@id='ppdFixedGridRightColumn']";
+    public static final String XPATH_SEARCH_BOX_AMAZON = "//input[@id='twotabsearchtextbox']";
+    public static final String XPATH_SEARCH_FIELD_AMAZON = "//input[@type='text']";
+    public static final String XPATH_SUBMIT_BUTTON_AMAZON = "//input[@type='submit']";
+    public static final String XPATH_NO_RESULT_MESSAGE_AMAZON = "//*[@id='search']/div[1]/div[2]/div/span[2]/div/div[1]";
 
     public static final String XPATH_TO_GET_ISBN_MHP = "//div[@class='prod-head-attr-data']//li[4]//span";
     public static final String XPATH_TO_GET_PRICE_MHP = "//div[@class='price-box']//span[@class='regular-price']//span[@class='price']";
@@ -31,10 +35,7 @@ public class Xpathes {
     public static final String XPATH_ALL_BOOK_SECTION_BN = "//div[@class='book_sec']";
     public static final String XPATH_BOOK_LIST_BN = "*//div[@class='book-list']";
     public static final String XPATH_TO_GET_ISBN_BN = "*//li[@class='book_c2_180616']";
-
-
     public static final String XPATH_RESULTS_BN = "*//li[@class='result']";
-
 
     public static final String XPATH_SEARCH_BUTTON_CENGAGE = "//button[@id='headerSubmitSearch']";
 
