@@ -4,16 +4,11 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.By;
-//import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import ru.yandex.qatools.allure.annotations.Parameter;
-//import utils.Concurrent;
-//import utils.ConcurrentJunitRunner;
 import utils.Parallelized;
 
 import java.lang.Object;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -23,14 +18,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static skillup.Xpathes.*;
 
-//@Concurrent(threads = 1)
+
 @RunWith(Parallelized.class)
 
 
 public class MhpGetDataFromMySql {
+
+    public MhpGetDataFromMySql(String isbn13FromTable, String priceFromTable, String urlFromTable) {
+        this.isbn13FromTable = isbn13FromTable;
+        this.priceFromTable = priceFromTable;
+        this.urlFromTable = urlFromTable;
+    }
+
+    private String isbn13FromTable;
+    private String priceFromTable;
+    private String urlFromTable;
 
     private static final String url = "jdbc:mysql://cppt.cearfhlon7we.us-west-2.rds.amazonaws.com/cppt";
     private static final String user = "tester";
@@ -40,64 +44,51 @@ public class MhpGetDataFromMySql {
     private static ResultSet result;
     public RemoteWebDriver driver1;
 
-    @Parameter("isbn13FromTable")
-    private static String isbn13FromTable;
-
-    @Parameter("priceFromTable")
-    private static String priceFromTable;
-
-    @Parameter("urlFromTable")
-    private static String urlFromTable;
 
     @Parameterized.Parameters
     public static Collection<Object[]> params() throws Exception {
         return getDataFromMysql();
     }
 
-    public MhpGetDataFromMySql(String isbn13FromTable, String priceFromTable, String urlFromTable) {
-        this.isbn13FromTable = isbn13FromTable;
-        this.priceFromTable = priceFromTable;
-        this.urlFromTable = urlFromTable;
-    }
-
     @Before
-    public void setUP() throws Exception {
+    public void setUP() {
         DesiredCapabilities capability = new DesiredCapabilities();
         capability.setBrowserName("chrome");
-        driver1 = new RemoteWebDriver(new URL("http://10.10.83.231:4444/wd/hub"), capability);
+        try {
+            driver1 = new RemoteWebDriver(new URL("http://10.10.83.231:4444/wd/hub"), capability);
+        } catch (MalformedURLException e) {
+            System.out.println("Invalid grid URL");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Test
-    public void mhprofessionalMySqlTest() throws MalformedURLException{
+    public void mhprofessionalMySqlTest() {
+        try {
+            driver1.get(urlFromTable);
+            String IsbnFromThePage = driver1.findElement(By.xpath(XPATH_TO_GET_ISBN_MHP)).getText();
+            System.out.println(urlFromTable);
 
-//        DesiredCapabilities capability = new DesiredCapabilities();
-//        capability.setBrowserName("chrome");
-//        WebDriver driver1 = new RemoteWebDriver(new URL("http://10.10.83.231:4444/wd/hub"), capability);
-//        WebDriver driver1 = new RemoteWebDriver(new URL("http://54.202.145.27:4444/wd/hub"), capability);
+            if (isbn13FromTable.equals(IsbnFromThePage)) {
+                System.out.println("MySQL data " + isbn13FromTable + " = site data (first tab) " + IsbnFromThePage);
+            } else {
+                driver1.findElement(By.xpath(XPATH_TO_GET_ISBN_MHP_ANOTHER_TAB)).click();
+                String IsbnFromThePageAnotherTab = driver1.findElement(By.xpath(XPATH_TO_GET_ISBN_MHP)).getText();
 
-        driver1.get(urlFromTable);
-        String IsbnFromThePage = driver1.findElement(By.xpath(XPATH_TO_GET_ISBN_MHP)).getText();
-        System.out.println(urlFromTable);
-
-        if (isbn13FromTable.equals(IsbnFromThePage)){
-            System.out.println("MySQL data " + isbn13FromTable + " = site data (first tab) " + IsbnFromThePage);
-        }
-        else {
-            driver1.findElement(By.xpath(XPATH_TO_GET_ISBN_MHP_ANOTHER_TAB)).click();
-            String IsbnFromThePageAnotherTab = driver1.findElement(By.xpath(XPATH_TO_GET_ISBN_MHP)).getText();
-
-            if(isbn13FromTable.equals(IsbnFromThePageAnotherTab)) {
-                System.out.println("MySQL data " + isbn13FromTable + " = site data (another tab) " + IsbnFromThePageAnotherTab );
+                if (isbn13FromTable.equals(IsbnFromThePageAnotherTab)) {
+                    System.out.println("MySQL data " + isbn13FromTable + " = site data (another tab) " + IsbnFromThePageAnotherTab);
+                }
             }
+
+            String actualPrice = driver1.findElement(By.xpath(XPATH_TO_GET_PRICE_MHP)).getText()
+                    .replace("$", "");
+            assertEquals(priceFromTable, actualPrice);
+            System.out.println("Parsed price " + priceFromTable + " is matched with website " + actualPrice);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-
-        String actualPrice = driver1.findElement(By.xpath(XPATH_TO_GET_PRICE_MHP)).getText()
-                .replace("$", "");
-        assertEquals(priceFromTable, actualPrice);
-        System.out.println("Parsed price " + priceFromTable + " is matched with website " + actualPrice);
-        driver1.quit();
     }
-
 
     public static ArrayList<Object[]> getDataFromMysql() throws IOException {
         String query = "select ISBN13, PRICE_NET_$, URL from mhprofessional where tag = 1007 limit 10";
@@ -121,7 +112,7 @@ public class MhpGetDataFromMySql {
     }
 
     @After
-    public  void stopDriver() {
+    public void stopDriver() {
         if (driver1 != null)
             driver1.quit();
     }
