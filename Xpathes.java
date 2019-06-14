@@ -17,6 +17,25 @@ public class Xpathes {
     public static final String XPATH_SEARCH_BUTTON_MHE = "//button[@id='submit_search']";
     public static final String XPATH_NO_RESULTS_MHE = "//div[@id='no-result-count']";
 
+    public static final String XPATH_FOR_REFRESHER_BN = "//*[text()='This site can’t be reached']";
+    public static final String XPATH_SUBMIT_BUTTON_BN = "//button[@type='submit']";
+    public static final String XPATH_TEXTBOOK_FIELD_BN = "//div[@class='mainNav']//li[@id='topCat_2']/a";
+    public static final String XPATH_CAMPUS_BOX_BN = "//div[@class='campusContainer'][1]//div[@class='bncbSelectBox campusSectionHeader']";
+    public static final String XPATH_DEPARTMENT_BOX_BN = "//div[@class='bookRowContainer'][1]//li[@class='deptColumn']";
+    public static final String XPATH_TERM_BOX_BN = "//div[@class='bookRowContainer'][1]//div[@class='bncbSelectBox termHeader']";
+    public static final String XPATH_COURSE_BOX_BN =  "//div[@class='bookRowContainer activeStripeBorderBox'][1]//div[@class='courseBookSelector']//li[@class='courseColumn']";
+    public static final String XPATH_SECTION_BOX_BN ="//div[@class='bookRowContainer activeStripeBorderBox'][1]//div[@class='courseBookSelector']//li[@class='sectionColumn']";
+    public static final String XPATH_CAMPUSES_BN ="*//li[@class='bncbOptionItem']";
+    public static final String XPATH_TERMS_BN = "*//li[@class='bncbOptionItem termOption']";
+    public static final String XPATH_BUTTON_SHOW_RESULTS_BN = "//div[@class='selectButtonContainer']//a[@id='findMaterialButton']";
+    public static final String XPATH_ALL_BOOK_SECTION_BN = "//div[@class='book_sec']";
+    public static final String XPATH_BOOK_LIST_BN = "*//div[@class='book-list']";
+    public static final String XPATH_TO_GET_ISBN_BN = "*//li[@class='book_c2_180616']";
+
+
+    public static final String XPATH_RESULTS_BN = "*//li[@class='result']";
+
+
     public static final String XPATH_SEARCH_BUTTON_CENGAGE = "//button[@id='headerSubmitSearch']";
 
 }
