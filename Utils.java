@@ -72,12 +72,28 @@ public class Utils {
     }
 
     public static void getAndCompareIsbn(String xpathGetIsbn, String ISBN13, WebDriver driver1) {
-        String IsbnFromThePage = driver1.findElement(By.xpath(xpathGetIsbn)).getText()
+        String isbnFromThePage = driver1.findElement(By.xpath(xpathGetIsbn)).getText()
                 .replace("-", "")
                 .replace("ISBN: ", "")
                 .replace("ISBN:", "");
-        assertEquals(ISBN13, IsbnFromThePage);
-        System.out.println(IsbnFromThePage);
+        assertEquals(ISBN13, isbnFromThePage);
+        System.out.println(isbnFromThePage);
+    }
+
+    public static void getAndCompareIsbnDifferentTabs(String xpathGetIsbn, String xpathGetIsbnAnotherTab,String isbn13FromTable, String urlFromTable, WebDriver driver1){
+        String IsbnFromThePage = driver1.findElement(By.xpath(xpathGetIsbn)).getText();
+        System.out.println(urlFromTable);
+
+        if (isbn13FromTable.equals(IsbnFromThePage)) {
+            System.out.println("MySQL data " + isbn13FromTable + " = site data (first tab) " + IsbnFromThePage);
+        } else {
+            driver1.findElement(By.xpath(xpathGetIsbnAnotherTab)).click();
+            String IsbnFromThePageAnotherTab = driver1.findElement(By.xpath(xpathGetIsbn)).getText();
+
+            if (isbn13FromTable.equals(IsbnFromThePageAnotherTab)) {
+                System.out.println("MySQL data " + isbn13FromTable + " = site data (another tab) " + IsbnFromThePageAnotherTab);
+            }
+        }
     }
 
     public static void checkPriceFromThePage(String xpathGetPrice, WebDriver driver1) {
@@ -94,10 +110,11 @@ public class Utils {
         }
     }
 
-    public static void getAndComparePrice(String xpathGetPrice, String expectedPrice) {
-        String actualPrice = driver.findElement(By.xpath(xpathGetPrice)).getText()
+    public static void getAndComparePrice(String xpathGetPrice, String priceFromTable, WebDriver driver1) {
+        String actualPrice = driver1.findElement(By.xpath(xpathGetPrice)).getText()
                 .replace("$", "");
-        assertEquals(expectedPrice, actualPrice);
-        System.out.println("Parsed price is matched with website");
+        assertEquals(priceFromTable, actualPrice);
+        System.out.println("Parsed price " + priceFromTable + " is matched with website " + actualPrice);
     }
-}
+    }
+
