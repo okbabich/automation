@@ -6,6 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -19,8 +20,12 @@ import static skillup.Xpathes.*;
 
 public class Utils {
 
+    public Utils(WebDriver driver1) {
+        this.driver1 = driver1;
+    }
+
     public static WebDriver driver;
-    public static WebDriver driver1;
+    public WebDriver driver1;
 
     public static void initDriver() {
         System.setProperty("webdriver.chrome.driver", "C:\\ChrDriver\\chromedriver.exe");
@@ -39,17 +44,19 @@ public class Utils {
         return driver;
     }
 
-    public static WebDriver initRemoteWD() throws MalformedURLException {
+    public WebDriver initRemoteWD() throws MalformedURLException {
+
         DesiredCapabilities capability = new DesiredCapabilities();
         capability.setBrowserName("chrome");
         WebDriver driver1 = new RemoteWebDriver(new URL("http://10.10.83.231:4444/wd/hub"), capability);
         return driver1;
     }
 
-    public static void closeRemotWD() {
-        if (driver1 != null)
-            driver1.quit();
+    public void closeRemotWD() {
+        if (driver != null)
+            driver.quit();
     }
+
     public static void closeDriver() {
         if (driver != null)
             driver.quit();
@@ -64,8 +71,8 @@ public class Utils {
         }
     }
 
-    public static void getAndCompareIsbn(String xpathGetIsbn, String ISBN13) {
-        String IsbnFromThePage = driver.findElement(By.xpath(xpathGetIsbn)).getText()
+    public static void getAndCompareIsbn(String xpathGetIsbn, String ISBN13, WebDriver driver1) {
+        String IsbnFromThePage = driver1.findElement(By.xpath(xpathGetIsbn)).getText()
                 .replace("-", "")
                 .replace("ISBN: ", "")
                 .replace("ISBN:", "");
@@ -73,10 +80,10 @@ public class Utils {
         System.out.println(IsbnFromThePage);
     }
 
-    public static void checkPriceFromThePage(String xpathGetPrice) {
-        List<WebElement> buyNewPriceBox = driver.findElements(By.xpath(xpathGetPrice));
+    public static void checkPriceFromThePage(String xpathGetPrice, WebDriver driver1) {
+        List<WebElement> buyNewPriceBox = driver1.findElements(By.xpath(xpathGetPrice));
 
-        if (driver.findElements(By.xpath(XPATH_CURRENTLY_UNAVAILABLE_AMAZON)).size() > 0) {
+        if (driver1.findElements(By.xpath(XPATH_CURRENTLY_UNAVAILABLE_AMAZON)).size() > 0) {
             System.out.println("Buy New price is absent (old design)");
         } else if (buyNewPriceBox.size() > 0) {
             System.out.println("Buy New price exists - " + buyNewPriceBox.get(0).getText());
