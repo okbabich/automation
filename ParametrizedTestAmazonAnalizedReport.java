@@ -5,17 +5,19 @@ import au.com.bytecode.opencsv.CSVReader;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import ru.yandex.qatools.allure.annotations.Parameter;
-import utils.Concurrent;
-import utils.ConcurrentJunitRunner;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import utils.Parallelized;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,53 +29,57 @@ import static skillup.Utils.*;
 import static skillup.Xpathes.*;
 
 
-@Concurrent(threads = 1)//count of threads
-@RunWith(ConcurrentJunitRunner.class)
+@RunWith(Parallelized.class)
 
 
 public class ParametrizedTestAmazonAnalizedReport {
-
-    public static WebDriver driver;
-
-    @Parameter("URL")
-    private static String URL;
-
-    @Parameter("ISBN13")
-    private static String ISBN13;
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> params() throws Exception {
-        return getDataFromTheCsvFile(0);//method to collect parameters. As a rule located in some other class
-    }
 
     public ParametrizedTestAmazonAnalizedReport(String URL, String ISBN13) {
         this.URL = URL;
         this.ISBN13 = ISBN13;
     }
 
-    @BeforeClass
-    public static void initializationDriver() {
-        driver = initTheSameDriver();
+    private String URL;
+    private String ISBN13;
+    private RemoteWebDriver driver1;
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> params() throws Exception {
+        return getDataFromTheCsvFile(0);//method to collect parameters. As a rule located in some other class
+    }
+
+    @Before
+    public void setUP() {
+        DesiredCapabilities capability = new DesiredCapabilities();
+        capability.setBrowserName("chrome");
+        try {
+            driver1 = new RemoteWebDriver(new URL("http://10.10.83.231:4444/wd/hub"), capability);
+        } catch (MalformedURLException e) {
+            System.out.println("Invalid grid URL");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Test
     public void amazonPageTest() throws IOException {
         System.out.println(URL);
-        driver.get(URL);
-        List<WebElement> items = driver.findElements(By.xpath(XPATH_FOR_PRICES_BOX_AMAZON));
+        driver1.get(URL);
+        List<WebElement> items = driver1.findElements(By.xpath(XPATH_FOR_PRICES_BOX_AMAZON));
 
         if (items.size() > 0) {
-            getAndCompareIsbn(XPATH_TO_GET_ISBN13_AMAZON_NEW_DESIGN, ISBN13);
-            checkPriceFromThePage(XPATH_TO_GET_BUY_NEW_PRICE_AMAZON_NEW_DESIGN);
+            getAndCompareIsbn(XPATH_TO_GET_ISBN13_AMAZON_NEW_DESIGN, ISBN13, driver1);
+            checkPriceFromThePage(XPATH_TO_GET_BUY_NEW_PRICE_AMAZON_NEW_DESIGN, driver1);
         } else {
-            getAndCompareIsbn(XPATH_TO_GET_ISBN13_AMAZON_OLD_DESIGN, ISBN13);
-            checkPriceFromThePage(XPATH_TO_GET_BUY_NEW_AMAZON_OLD_DESIGN);
+            getAndCompareIsbn(XPATH_TO_GET_ISBN13_AMAZON_OLD_DESIGN, ISBN13, driver1);
+            checkPriceFromThePage(XPATH_TO_GET_BUY_NEW_AMAZON_OLD_DESIGN, driver1);
         }
     }
 
-    @AfterClass
-    public static void stopDriver() {
-        closeDriver();
+    @After
+    public void stopDriver() {
+        if (driver1 != null)
+            driver1.quit();
     }
 
     /**
@@ -88,10 +94,8 @@ public class ParametrizedTestAmazonAnalizedReport {
     public static ArrayList<Object[]> getDataFromTheCsvFile(int ColumnNumber) throws IOException, AssertionError {
         ArrayList<Object[]> data = new ArrayList<>();
         File folder = new File("src/main/resources/generic");//path to file location in you project
-        assertThat("File not found", folder.listFiles(), arrayWithSize(greaterThanOrEqualTo(1))); // проверяем, что папка не пустая
-        CSVReader csvReader = new CSVReader(new FileReader(folder.listFiles()[0]), ",".charAt(0), "\"".charAt(0), 1); // в new FileReader() может быть указан цсв файл
-
-        //.charAt() возвращает символ, расположенный по указанному индексу строки
+        assertThat("File not found", folder.listFiles(), arrayWithSize(greaterThanOrEqualTo(1)));
+        CSVReader csvReader = new CSVReader(new FileReader(folder.listFiles()[0]), ",".charAt(0), "\"".charAt(0), 1);
         List<String[]> content = csvReader.readAll();
         csvReader.close();
         for (String[] row : content) {
