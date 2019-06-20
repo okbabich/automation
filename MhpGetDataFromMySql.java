@@ -3,7 +3,6 @@ package skillup;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.openqa.selenium.By;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import utils.Parallelized;
@@ -17,8 +16,8 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
 import static skillup.Xpathes.*;
+import static skillup.Utils.*;
 
 
 @RunWith(Parallelized.class)
@@ -67,31 +66,16 @@ public class MhpGetDataFromMySql {
     public void mhprofessionalMySqlTest() {
         try {
             driver1.get(urlFromTable);
-            String IsbnFromThePage = driver1.findElement(By.xpath(XPATH_TO_GET_ISBN_MHP)).getText();
-            System.out.println(urlFromTable);
 
-            if (isbn13FromTable.equals(IsbnFromThePage)) {
-                System.out.println("MySQL data " + isbn13FromTable + " = site data (first tab) " + IsbnFromThePage);
-            } else {
-                driver1.findElement(By.xpath(XPATH_TO_GET_ISBN_MHP_ANOTHER_TAB)).click();
-                String IsbnFromThePageAnotherTab = driver1.findElement(By.xpath(XPATH_TO_GET_ISBN_MHP)).getText();
-
-                if (isbn13FromTable.equals(IsbnFromThePageAnotherTab)) {
-                    System.out.println("MySQL data " + isbn13FromTable + " = site data (another tab) " + IsbnFromThePageAnotherTab);
-                }
-            }
-
-            String actualPrice = driver1.findElement(By.xpath(XPATH_TO_GET_PRICE_MHP)).getText()
-                    .replace("$", "");
-            assertEquals(priceFromTable, actualPrice);
-            System.out.println("Parsed price " + priceFromTable + " is matched with website " + actualPrice);
+            getAndCompareIsbnDifferentTabs(XPATH_TO_GET_ISBN_MHP, XPATH_TO_GET_ISBN_MHP_ANOTHER_TAB, isbn13FromTable, urlFromTable, driver1);
+            getAndComparePrice(XPATH_TO_GET_PRICE_MHP, priceFromTable, driver1);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
     public static ArrayList<Object[]> getDataFromMysql() throws IOException {
-        String query = "select ISBN13, PRICE_NET_$, URL from mhprofessional where tag = 1007 limit 10";
+        String query = "select ISBN13, PRICE_NET_$, URL from mhprofessional where tag = 1014 limit 10";
         ArrayList<Object[]> data = new ArrayList<>();
         try {
             connection = DriverManager.getConnection(url, user, password);
@@ -115,6 +99,7 @@ public class MhpGetDataFromMySql {
     public void stopDriver() {
         if (driver1 != null)
             driver1.quit();
+
     }
 }
 
