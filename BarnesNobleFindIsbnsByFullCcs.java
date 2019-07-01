@@ -6,8 +6,9 @@ package skillup;
 import org.junit.*;
 import org.junit.Test;
 import org.openqa.selenium.By;
-
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import utils.LibraryUtils;
 
 import java.util.List;
@@ -19,15 +20,19 @@ import static skillup.Xpathes.*;
 public class BarnesNobleFindIsbnsByFullCcs {
 
     private String definiteCampus = "Barnes & Noble @ Quincy College";
-    private String definiteTerm = "Spring 2019";
+    private String definiteTerm = "Fall 2019";
     private String definiteDept = "ACC";
     private String definiteCourse = "101";
     private String definiteSection = "01";
 
-
     @BeforeClass
     public static void setUpClass() {
-        initDriver();
+
+        String proxy = "34.222.39.93:3128";
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--proxy-server=http://" + proxy);
+        System.setProperty("webdriver.chrome.driver", "C:\\ChrDriver\\chromedriver.exe");
+        driver = new ChromeDriver(options);
         driver.get("https://www.bncollege.com/campus-stores/");
     }
 
